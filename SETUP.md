@@ -2,7 +2,7 @@
 
 **Инструкция по настройке Postgresql, Clickhouse, Superset.**
 
-**Postgresql**
+**Postgresql, Clickhouse**
 
 1.Для начала создадим файл docker-compose.yml. С необходимыми настройками.
 
@@ -54,6 +54,10 @@ docker-compose up -d
 ```
 
 ![image](https://github.com/user-attachments/assets/9a359dbe-0907-4568-89b8-e362ad6139cd)
+
+Переходим в DBeaver и создаем подключения.
+
+![image](https://github.com/user-attachments/assets/2fa79591-860f-455c-b821-30645910277d)
 
 
 
