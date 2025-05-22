@@ -95,6 +95,8 @@ docker-compose up -d
 
 ![image](https://github.com/user-attachments/assets/d87b2f83-ea6a-402a-9baf-7139a744595f)
 
+![image](https://github.com/user-attachments/assets/ce8e033f-56a1-4742-92ed-09b970ec4291)
+
 И ищем строку вида `http://127.0.0.1:8888/lab?token=cc9b05f96f`, копируем всю строку и вставляем в браузер, после чего открывается ноутбук.
 
 Либо копируем токен и вставляем в поле `Password or token` и так же переходим в ноутбук.
