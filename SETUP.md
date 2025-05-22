@@ -85,7 +85,7 @@ docker-compose up -d
 
 Заходим по ссылке http://localhost:8888/
 
-Увидем
+Появится следующее окно:
 
 ![image](https://github.com/user-attachments/assets/d403d881-660c-4e4e-a810-b3aa710a3813)
 
@@ -95,7 +95,9 @@ docker-compose up -d
 
 ![image](https://github.com/user-attachments/assets/d87b2f83-ea6a-402a-9baf-7139a744595f)
 
-И ищем строку вида `http://127.0.0.1:8888/lab?token=cc9b05f96f`, копируем и вставляем в браузер, после чего открывается ноутбук.
+И ищем строку вида `http://127.0.0.1:8888/lab?token=cc9b05f96f`, копируем всю строку и вставляем в браузер, после чего открывается ноутбук.
+
+Либо копируем токен и вставляем в поле 
 
 ![image](https://github.com/user-attachments/assets/84140b14-f9e2-4c97-ae52-e9c4cefb27c7)
 
