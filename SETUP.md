@@ -99,7 +99,7 @@ USER jovyan
 <img width="1773" height="617" alt="image" src="https://github.com/user-attachments/assets/d9dbf7fe-e47c-44eb-a50a-43b2a07e89de" />
 
 
-**Jupyter**
+**Запуск Jupyter**
 
 ![image](https://github.com/user-attachments/assets/9442b3d0-d0d4-4d94-8bc0-dc73217b387d)
 
