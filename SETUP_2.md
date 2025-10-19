@@ -6,6 +6,21 @@
 
 ```
 services:
+  jupyter:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jupyter
+    ports:
+      - "8888:8888"   # Jupyter
+      - "4040:4040"   # Spark UI
+    volumes:
+      - ./notebooks:/home/jovyan/work
+    environment:
+      - PYSPARK_PYTHON=python
+    command: start-notebook.sh
+    restart: always
+
   postgres:
     image: postgres:15
     container_name: postgres
@@ -19,37 +34,24 @@ services:
       - pgdata:/var/lib/postgresql/data
 
   clickhouse:
-    image: clickhouse/clickhouse-server
+    image: clickhouse/clickhouse-server:latest
     container_name: clickhouse
+    environment:
+      CLICKHOUSE_USER: default
+      CLICKHOUSE_PASSWORD: mypassword
     ports:
-      - "8123:8123"   # HTTP интерфейс
-      - "9000:9000"   # TCP интерфейс
+      - "8123:8123"   # HTTP
+      - "9000:9000"   # TCP
     volumes:
       - chdata:/var/lib/clickhouse
 
-  jupyter:
-    image: jupyter/base-notebook
-    container_name: jupyter
-    ports:
-      - "8888:8888"
-      - "4040:4040"   # Spark UI
-    volumes:
-      - ./notebooks:/home/jovyan/work
-    restart: always
-    environment:
-      - PYSPARK_PYTHON=python
-    command: start-notebook.sh
-    # Установка PySpark, psycopg2 и clickhouse-driver при старте
-    build:
-      context: .
-      dockerfile: Dockerfile
-
   metabase:
-    image: metabase/metabase
+    image: metabase/metabase:latest
     container_name: metabase
     ports:
       - "3000:3000"
     environment:
+      # Metabase использует PostgreSQL для хранения своей мета-информации
       MB_DB_TYPE: postgres
       MB_DB_DBNAME: mydb
       MB_DB_PORT: 5432
@@ -58,6 +60,7 @@ services:
       MB_DB_HOST: postgres
     depends_on:
       - postgres
+      - clickhouse
 
 volumes:
   pgdata:
@@ -67,15 +70,39 @@ volumes:
 2. Создадим файл Dockerfile.
    
 ```
-FROM jupyter/base-notebook
+FROM jupyter/base-notebook:latest
 
 USER root
 
-# Установка Java для Spark
-RUN apt-get update && apt-get install -y openjdk-21-jdk && rm -rf /var/lib/apt/lists/*
+# Установка Java
+RUN apt-get update && apt-get install -y openjdk-21-jdk wget curl && rm -rf /var/lib/apt/lists/*
 
-# Установка PySpark и драйверов для Postgres и ClickHouse
-RUN pip install pyspark psycopg2-binary clickhouse-connect
+# Установка Spark
+ENV SPARK_VERSION=4.0.1
+ENV HADOOP_VERSION=3
+
+RUN wget https://dlcdn.apache.org/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz \
+    && tar xvf spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz -C /usr/local/ \
+    && mv /usr/local/spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION} /usr/local/spark \
+    && rm spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz
+
+ENV SPARK_HOME=/usr/local/spark
+ENV PATH=$SPARK_HOME/bin:$PATH
+
+# Установка PySpark и драйверов
+RUN pip install --no-cache-dir pyspark psycopg2-binary clickhouse-connect
+
+# Копирование JDBC-драйверов в контейнер
+# Предварительно положите JAR-файлы в папку ./jars:
+#   - postgresql-42.6.0.jar
+#   - clickhouse-jdbc-0.4.6-all.jar
+# -----------------------
+COPY jars /usr/local/spark/jars
+
+# Переменные среды для Java и Spark
+# -----------------------
+ENV JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
+ENV PATH=$JAVA_HOME/bin:$PATH
 
 USER jovyan
 ```
@@ -83,12 +110,20 @@ USER jovyan
 3. Сохранить `docker-compose.yml` и `Dockerfile` в одной папке.
 
 4. Создай папку `notebooks` для Jupyter ноутбуков.
- 
-5. Открыть Docker Desktop.
 
-6. Открыть CMD терминал и перейти в папку с проектом где лежит `docker-compose.yml` и `Dockerfile`.
+5. Создать папку jars для `jar` файлов и скачать в нее джарники.
 
-7. Запустить Docker Compose. Для запуска используем команду в терминале CMD:
+<img width="643" height="112" alt="image" src="https://github.com/user-attachments/assets/951f4ea5-8f03-4ad0-83b8-0e816b32aa8e" />
+
+Структура папок
+
+<img width="621" height="157" alt="image" src="https://github.com/user-attachments/assets/741a8449-da29-4356-8a1c-ab96ef6bddb0" />
+
+6. Открыть Docker Desktop.
+
+7. Открыть CMD терминал и перейти в папку с проектом где лежит `docker-compose.yml` и `Dockerfile`.
+
+8. Запустить Docker Compose. Для запуска используем команду в терминале CMD:
 
 `docker-compose up -d --build`
 
