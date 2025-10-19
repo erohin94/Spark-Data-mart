@@ -119,6 +119,12 @@ USER jovyan
 
 <img width="621" height="157" alt="image" src="https://github.com/user-attachments/assets/741a8449-da29-4356-8a1c-ab96ef6bddb0" />
 
+Драйверы для бд
+
+Postgres - https://jdbc.postgresql.org/download/
+
+ClickHouse - https://mvnrepository.com/artifact/com.clickhouse/clickhouse-jdbc
+
 6. Открыть Docker Desktop.
 
 7. Открыть CMD терминал и перейти в папку с проектом где лежит `docker-compose.yml` и `Dockerfile`.
