@@ -184,19 +184,21 @@ ClickHouse: `localhost:8123`
 ```
 from pyspark.sql import SparkSession
 
-# Создаём SparkSession
 spark = SparkSession.builder \
-    .appName("TestApp") \
-    .master("local[*]") \
+    .appName("PostgresTest") \
+    .config("spark.jars", "/usr/local/spark/jars/postgresql-42.6.0.jar") \
     .config("spark.driver.host", "0.0.0.0") \
     .getOrCreate()
 
-print("Spark UI:", spark.sparkContext.uiWebUrl)
+df_pg = spark.read.format("jdbc") \
+    .option("url", "jdbc:postgresql://postgres:5432/mydb") \
+    .option("dbtable", "(SELECT 1 AS test_col) AS t") \
+    .option("user", "admin") \
+    .option("password", "admin") \
+    .option("driver", "org.postgresql.Driver") \
+    .load()
 
-# Простейший тест
-df = spark.range(10)
-df.show()
-input("Spark запущен. Перейди в http://localhost:4040 и нажми Enter, чтобы завершить...")
+df_pg.show()
 ```
 
 ```
@@ -207,55 +209,23 @@ spark.stop()
 from pyspark.sql import SparkSession
 
 spark = SparkSession.builder \
-    .appName("TestApp") \
-    .master("local[*]") \
-    .config("spark.driver.host", "localhost").getOrCreate()
+    .appName("ClickHouseTest") \
+    .config("spark.jars", "/usr/local/spark/jars/clickhouse-jdbc-0.4.6-all.jar") \
+    .config("spark.driver.host", "0.0.0.0") \
+    .getOrCreate()
+
+
+df_ch = spark.read.format("jdbc") \
+        .option("url", "jdbc:clickhouse://clickhouse:8123/default") \
+        .option("dbtable", "(SELECT 1 AS test_col) AS t") \
+        .option("user", "default") \
+        .option("password", "mypassword") \
+        .option("driver", "com.clickhouse.jdbc.ClickHouseDriver") \
+        .load()
+
+df_ch.show()
 ```
 
 ```
-print("Spark UI:", spark.sparkContext.uiWebUrl)
-````
-
-```
-import clickhouse_connect
-
-client = clickhouse_connect.get_client(
-    host='localhost',
-    port=8123,
-    username='default',
-    password='mypassword'
-)
-
-# Простейшая команда
-print(client.command("SELECT 1"))
-```
-
-```
-import clickhouse_connect
-
-client = clickhouse_connect.get_client(
-    host='clickhouse',  # имя сервиса из docker-compose.yml
-    port=8123,
-    username='default',
-    password='mypassword'
-)
-
-print(client.command("SELECT 1"))
-```
-
-```
-import psycopg2
-
-conn = psycopg2.connect(
-    host="postgres",
-    port=5432,
-    database="mydb",
-    user="admin",
-    password="admin"
-)
-cur = conn.cursor()
-cur.execute("SELECT 1;")
-print(cur.fetchone())  # должно вывести (1,)
-cur.close()
-conn.close()
+spark.stop()
 ```
