@@ -185,20 +185,6 @@ print("Spark UI:", spark.sparkContext.uiWebUrl)
 import clickhouse_connect
 
 client = clickhouse_connect.get_client(
-    host='clickhouse',
-    port=8123,
-    username='default',
-    password='mypassword'
-)
-
-# Простейшая команда
-print(client.command("SELECT 1"))
-```
-
-```
-import clickhouse_connect
-
-client = clickhouse_connect.get_client(
     host='clickhouse',  # имя сервиса из docker-compose.yml
     port=8123,
     username='default',
