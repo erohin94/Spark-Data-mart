@@ -2,21 +2,6 @@
 
 **Инструкция по настройке Postgresql, Clickhouse, Jupyter, Spark, Metabase.**
 
-
-
-**Доступные интерфейсы:**
-
-Jupyter: `http://localhost:8888`
-
-Spark UI: `http://localhost:4040 (активен пока работает SparkSession)`
-
-Metabase: `http://localhost:3000`
-
-Postgres: `localhost:5432`
-
-ClickHouse: `localhost:8123`
-
-
 1. Для начала создадим файл `docker-compose.yml`. С необходимыми настройками.
 
 ```
@@ -112,6 +97,51 @@ USER jovyan
 Настройка подключений в DBeaver.
 
 <img width="1773" height="617" alt="image" src="https://github.com/user-attachments/assets/d9dbf7fe-e47c-44eb-a50a-43b2a07e89de" />
+
+
+**Jupyter**
+
+![image](https://github.com/user-attachments/assets/9442b3d0-d0d4-4d94-8bc0-dc73217b387d)
+
+Заходим по ссылке http://localhost:8888/
+
+Появится следующее окно:
+
+![image](https://github.com/user-attachments/assets/d403d881-660c-4e4e-a810-b3aa710a3813)
+
+Вводим в терминале 
+
+`docker logs jupyter`
+
+![image](https://github.com/user-attachments/assets/d87b2f83-ea6a-402a-9baf-7139a744595f)
+
+![image](https://github.com/user-attachments/assets/ce8e033f-56a1-4742-92ed-09b970ec4291)
+
+И ищем строку вида `http://127.0.0.1:8888/lab?token=cc9b05f96f`, копируем всю строку и вставляем в браузер, после чего открывается ноутбук.
+
+Либо копируем токен и вставляем в поле `Password or token` и так же переходим в ноутбук.
+
+![image](https://github.com/user-attachments/assets/84140b14-f9e2-4c97-ae52-e9c4cefb27c7)
+
+Так же можно сделать запуск без ввода логина или токена. Создав `.yml` файл, добавив в него строку `command: start-notebook.sh --NotebookApp.token=''` следующего вида
+
+```
+command: start-notebook.sh --NotebookApp.token=''
+```
+
+
+**Доступные интерфейсы:**
+
+Jupyter: `http://localhost:8888`
+
+Spark UI: `http://localhost:4040 (активен пока работает SparkSession)`
+
+Metabase: `http://localhost:3000`
+
+Postgres: `localhost:5432`
+
+ClickHouse: `localhost:8123`
+
 
 
 ## Тесты
