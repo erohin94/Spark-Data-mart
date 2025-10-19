@@ -142,8 +142,6 @@ Postgres: `localhost:5432`
 
 ClickHouse: `localhost:8123`
 
-
-
 ## Тесты
 
 Запускать из юпитера
