@@ -111,7 +111,7 @@ USER jovyan
 
 4. Создай папку `notebooks` для Jupyter ноутбуков.
 
-5. Создать папку jars для `jar` файлов и скачать в нее джарники.
+5. Создать папку jars для `jar` файлов и [скачать](https://github.com/erohin94/Spark-Data-mart/tree/main/jars) в нее джарники.
 
 <img width="643" height="112" alt="image" src="https://github.com/user-attachments/assets/951f4ea5-8f03-4ad0-83b8-0e816b32aa8e" />
 
