@@ -1,14 +1,7 @@
-Установка для работы всех сервисов вместе
+## Настройка технической составляющей
 
-**Как запускать**
+**Инструкция по настройке Postgresql, Clickhouse, Jupyter, Spark, Metabase.**
 
-Сохранить `docker-compose.yml` и `Dockerfile` в одной папке.
-
-Создай папку `notebooks` для Jupyter ноутбуков.
-
-Запустить:
-
-`docker-compose up -d --build`
 
 
 **Доступные интерфейсы:**
@@ -24,7 +17,8 @@ Postgres: `localhost:5432`
 ClickHouse: `localhost:8123`
 
 
-docker-compose.yml
+1. Для начала создадим файл `docker-compose.yml`. С необходимыми настройками.
+
 ```
 services:
   postgres:
@@ -85,7 +79,8 @@ volumes:
   chdata:
 ```
 
-Dockerfile
+2. Создадим файл Dockerfile.
+   
 ```
 FROM jupyter/base-notebook
 
@@ -99,6 +94,25 @@ RUN pip install pyspark psycopg2-binary clickhouse-connect
 
 USER jovyan
 ```
+
+3. Сохранить `docker-compose.yml` и `Dockerfile` в одной папке.
+
+4. Создай папку `notebooks` для Jupyter ноутбуков.
+ 
+5. Открыть Docker Desktop.
+
+6. Открыть CMD терминал и перейти в папку с проектом где лежит `docker-compose.yml` и `Dockerfile`.
+
+7. Запустить Docker Compose. Для запуска используем команду в терминале CMD:
+
+`docker-compose up -d --build`
+
+<img width="548" height="20" alt="image" src="https://github.com/user-attachments/assets/b88a8128-14a4-4cc4-ab45-386869b83bec" />
+
+Настройка подключений в DBeaver.
+
+<img width="1773" height="617" alt="image" src="https://github.com/user-attachments/assets/d9dbf7fe-e47c-44eb-a50a-43b2a07e89de" />
+
 
 ## Тесты
 
