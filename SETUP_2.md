@@ -100,3 +100,85 @@ RUN pip install pyspark psycopg2-binary clickhouse-connect
 USER jovyan
 ```
 
+## Тесты
+
+Запускать из юпитера
+
+```
+from pyspark.sql import SparkSession
+
+# Создаём SparkSession
+spark = SparkSession.builder \
+    .appName("TestApp") \
+    .master("local[*]") \
+    .config("spark.driver.host", "0.0.0.0") \
+    .getOrCreate()
+
+print("Spark UI:", spark.sparkContext.uiWebUrl)
+
+# Простейший тест
+df = spark.range(10)
+df.show()
+input("Spark запущен. Перейди в http://localhost:4040 и нажми Enter, чтобы завершить...")
+```
+
+```
+spark.stop()
+```
+
+```
+from pyspark.sql import SparkSession
+
+spark = SparkSession.builder \
+    .appName("TestApp") \
+    .master("local[*]") \
+    .config("spark.driver.host", "localhost").getOrCreate()
+```
+
+```
+print("Spark UI:", spark.sparkContext.uiWebUrl)
+````
+
+```
+import clickhouse_connect
+
+client = clickhouse_connect.get_client(
+    host='localhost',
+    port=8123,
+    username='default',
+    password='mypassword'
+)
+
+# Простейшая команда
+print(client.command("SELECT 1"))
+```
+
+```
+import clickhouse_connect
+
+client = clickhouse_connect.get_client(
+    host='clickhouse',  # имя сервиса из docker-compose.yml
+    port=8123,
+    username='default',
+    password='mypassword'
+)
+
+print(client.command("SELECT 1"))
+```
+
+```
+import psycopg2
+
+conn = psycopg2.connect(
+    host="postgres",
+    port=5432,
+    database="mydb",
+    user="admin",
+    password="admin"
+)
+cur = conn.cursor()
+cur.execute("SELECT 1;")
+print(cur.fetchone())  # должно вывести (1,)
+cur.close()
+conn.close()
+```
