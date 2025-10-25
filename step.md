@@ -100,7 +100,7 @@ Executors - так как все запускаем не в кластерном
 
 <img width="645" height="156" alt="image" src="https://github.com/user-attachments/assets/d0768cd4-6b09-43f2-abf0-5b526ee472fc" />
 
-Поэтому все таблички и файлики буду собирать в папку на своем компьютере, которая в юпитере видна по следующему пути `/home/jovyan/work/data/здесь_название_файла_например.csv`
+Поэтому все таблички и файлики буду собирать в папку на своем компьютере `C:\Users\erohi\Desktop\spark_data_mart\notebooks`, которая в юпитере видна по следующему пути `/home/jovyan/work/data/здесь_название_файла_например.csv`. 
 
 <img width="633" height="111" alt="image" src="https://github.com/user-attachments/assets/9c7bf506-2e2a-4725-b4c3-219568aa613f" />
 
