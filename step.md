@@ -112,4 +112,5 @@ Executors - так как все запускаем не в кластерном
 
 Метод `.printSchema()` - выводит описательные характеритики.
 
-![Uploading image.png…]()
+<img width="341" height="87" alt="image" src="https://github.com/user-attachments/assets/c95a56fa-1ef8-496d-873d-463533b0733c" />
+
