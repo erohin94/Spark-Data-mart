@@ -119,3 +119,92 @@ Executors - так как все запускаем не в кластерном
 `num_row_groups: 1` - это техническая составляющая паркет файлов. Несколько строк обьединяются в строковые группы, на основе их размера. По стандарту это 512мб или 1гб. В данном случае данных мало и поэтому они поместились в одну группу row_groups. Если данных будет больше, то будет больше групп.
 
 **3)postgres** 35:00
+
+Проверить права на схему через системные таблицы, чтобы можно было созавать таблицы и загружать с помощью spark.
+
+```
+SELECT nspname AS schema_name,
+       nspowner::regrole AS owner,
+       nspacl
+FROM pg_namespace
+WHERE nspname = 'public'
+```
+
+Если будет следующее
+
+<img width="702" height="27" alt="image" src="https://github.com/user-attachments/assets/1191f2b2-4a9f-49d3-9e6b-67b2f044e523" />
+
+| Поле            | Значение                                                                                                                          |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| **schema_name** | `public` — стандартная схема                                                                                                      |
+| **owner**       | `pg_database_owner` — это не пользователь `admin`, а *роль-владелец базы данных*                                             |
+| **nspacl**      | `{pg_database_owner=UC/pg_database_owner,=U/pg_database_owner}` — только владельцу разрешено `U` (использование) и `C` (создание) |
+
+`U = USAGE` (можно использовать схему)
+
+`C = CREATE` (можно создавать таблицы)
+
+Это значит пользователь `admin` не является владельцем схемы `public`
+и не имеет прав `CREATE` на неё. Поэтому Spark не сможет создать таблицу при записи — и, скорее всего, выдаст ошибку вроде
+`permission denied for schema public`.
+
+Что делаю, выполняю команду в терминале `docker exec -it postgres psql -U admin -d mydb`
+
+<img width="501" height="51" alt="image" src="https://github.com/user-attachments/assets/072a9c22-e9e8-4efd-b6c4-beacac9475d4" />
+
+А затем внутри psql выполнить:
+
+```
+ALTER SCHEMA public OWNER TO admin;
+GRANT CREATE ON SCHEMA public TO admin;
+```
+
+<img width="369" height="83" alt="image" src="https://github.com/user-attachments/assets/9466cab5-5a6e-4b00-8445-0b6773d05edb" />
+
+Проверяю и вижу следующее
+
+<img width="626" height="289" alt="image" src="https://github.com/user-attachments/assets/f78ad52f-0043-4bfc-9a4e-db0413655a50" />
+
+То есть у пользователя admin есть и U, и C. А владелец схемы теперь тоже admin.
+
+Далее, загружу таблицу в postgre. Для этого в локальную папку кладу файлик.
+
+<img width="627" height="153" alt="image" src="https://github.com/user-attachments/assets/c55a89c6-9bbe-4b10-9351-8fb61159caa4" />
+
+Читаю этот файл в спарк и сохраняю в postgre. `.mode("overwrite")` создает автоматически таблицу на основе схемы датафрейма при чтении CSV.
+
+Проверяю, как видно, таблица есть в postgre:
+
+<img width="570" height="199" alt="image" src="https://github.com/user-attachments/assets/270c5c7c-8b83-4c6b-99b2-04d0664f8a37" />
+
+**4) ClickHouse**
+
+Для начала так же занружу таблицу `visits_clickhouse.csv` в ClickHouse.
+
+Создаю в ручную таблицу в клике, в дибивере прописываю следующее:
+
+```
+/* Создаю таблицу */
+CREATE TABLE default.visits
+(
+    visitid Int32,
+    visitDateTime DateTime,
+    URL String,
+    duration Int32,
+    clientID Int32,
+    source String,
+    UTMCampaign String,
+    params String
+)
+ENGINE = MergeTree()
+ORDER BY visitid
+```
+
+`visitid` — колонка для `ORDER BY`, по которой ClickHouse будет сортировать данные.
+
+Далее с помощью Spark загружаю CSV файл в БД клик. И проверяю что данные добавились.
+
+<img width="1237" height="266" alt="image" src="https://github.com/user-attachments/assets/4b23792b-e569-414d-abc1-9f6f01d0d627" />
+
+После чего могу с помощбю спарк, работать с таблицей в клике.
+
