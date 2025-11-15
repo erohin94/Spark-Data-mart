@@ -167,7 +167,7 @@ GRANT CREATE ON SCHEMA public TO admin;
 
 То есть у пользователя admin есть и U, и C. А владелец схемы теперь тоже admin.
 
-Далее, загружу таблицу в postgre. Для этого в локальную папку кладу файлик.
+Далее, загружу таблицу в postgre. Для этого в локальную папку кладу файлик. (Это будет одна из таблиц источников, на основе которой будем собирать витрину)
 
 <img width="627" height="153" alt="image" src="https://github.com/user-attachments/assets/c55a89c6-9bbe-4b10-9351-8fb61159caa4" />
 
@@ -179,7 +179,7 @@ GRANT CREATE ON SCHEMA public TO admin;
 
 **4) ClickHouse**
 
-Для начала так же загружу таблицу `visits_clickhouse.csv` в ClickHouse. так же добавляю CSV файл в локальную папку, где лежат все таблички. 
+Для начала так же загружу таблицу `visits_clickhouse.csv` в ClickHouse (Это будет одна из таблиц источников, на основе которой будем собирать витрину). Так же добавляю CSV файл в локальную папку, где лежат все таблички. 
 
 <img width="641" height="189" alt="image" src="https://github.com/user-attachments/assets/8c783cc0-37e0-45c1-b31a-d14a580aaba7" />
 
