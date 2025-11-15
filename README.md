@@ -16,3 +16,5 @@
 ### Дополнительно
 
 Туториал по [Spark](https://habr.com/ru/articles/807421/) 
+
+[Документация Spark](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/index.html)
