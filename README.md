@@ -6,6 +6,7 @@
 - [data](https://github.com/erohin94/Spark-Data-mart/tree/main/data) - папка для исходных данных
 - [generation](https://github.com/erohin94/Spark-Data-mart/tree/main/generation) - python-скрипты для генерации этих данных
 - [sql](https://github.com/erohin94/Spark-Data-mart/tree/main/sql) - sql-скрипты для методологии
+- [step](https://github.com/erohin94/Spark-Data-mart/blob/main/step.md) - порядок выполнения
 
 
 
