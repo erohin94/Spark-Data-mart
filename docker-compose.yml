@@ -25,6 +25,7 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+      #- ./notebooks/data:/data # Путь, чтобы мог создавать таблицы в БД на основе таблицы из CSV файла
 
   clickhouse:
     image: clickhouse/clickhouse-server:latest
@@ -58,4 +59,5 @@ services:
 volumes:
   pgdata:
   chdata:
+
 
