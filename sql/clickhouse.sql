@@ -1,4 +1,9 @@
-CREATE TABLE marketing.visits
+/* Проверка подключения к БД */
+SELECT 1;
+
+
+/* Создаю таблицу */
+CREATE TABLE default.visits
 (
     visitid Int32,
     visitDateTime DateTime,
@@ -9,10 +14,14 @@ CREATE TABLE marketing.visits
     UTMCampaign String,
     params String
 )
-ENGINE = MergeTree
+ENGINE = MergeTree()
 ORDER BY visitDateTime;
 
-select * from marketing.visits;
+
+/* Проверка что данные добавились */
+SELECT * FROM default.visits;
+
+SELECT COUNT(*) FROM default.visits;
 
 
 --match methodology
@@ -28,7 +37,7 @@ with filtered_step1 as (
         params,
         replaceRegexpAll(params, '\[|\]', '') as params_regex,
         splitByString(', ', replaceRegexpAll(params, '\[|\]', '')) as params_split
-    from marketing.visits
+    from default.visits
     where visitDateTime >= '2024-01-01' and visitDateTime < '2025-01-28'
     and source in ('ad', 'direct')
     and (
@@ -60,6 +69,9 @@ filtered_step2 as (
     toInt32OrNull(params_split[2]) as event_id
     from filtered_step1
 )
+
+--SELECT * FROM filtered_step2
+
 select
     dt,
     visitid,
